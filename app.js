@@ -1,15 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require('cors')
 const bodyParser = require("body-parser");
 require("dotenv/config");
-
 const companiesRouter = require("./routes/companies");
 const companyRouter = require('./routes/company');
 const superusersRouter = require('./routes/superusers');
 const superuserRouter = require('./routes/superuser');
 
 const app = express();
-
+app.use(cors())
 app.use(bodyParser.json());
 mongoose.connect(process.env.DB_CONNECTION, (err) => {
   if (err) return console.log(err);

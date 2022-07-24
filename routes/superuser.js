@@ -12,5 +12,12 @@ router.get('/:id', (req, res)=>{
         res.status(404).json({message:'document not found'})
 })})
 
+router.patch('/:id', (req, res)=>{
+    Superuser.findOneAndUpdate({_id:req.params.id}, req.body,{new:true}, (err, doc)=>{
+        if(!doc) res.status(404).json({message:'not found'})
+        res.status(200).json(doc)
+    })
+})
+
 
 module.exports = router;
