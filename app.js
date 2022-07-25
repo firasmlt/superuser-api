@@ -18,8 +18,10 @@ mongoose.connect(process.env.DB_CONNECTION, (err) => {
 
 // routes
 app.get("/", (req, res) => {
-  console.log(req);
-  res.status(404).send("invalid url");
+  res.sendFile(`${__dirname}/static/index.html`, (err) => {
+    res.end();
+    if (err) throw err;
+  });
 });
 app.get("/api", (req, res) => {
   res.status(404).send("invalid url");
