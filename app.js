@@ -1,15 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require('cors')
+const cors = require("cors");
 const bodyParser = require("body-parser");
 require("dotenv/config");
 const companiesRouter = require("./routes/companies");
-const companyRouter = require('./routes/company');
-const superusersRouter = require('./routes/superusers');
-const superuserRouter = require('./routes/superuser');
+const companyRouter = require("./routes/company");
+const superusersRouter = require("./routes/superusers");
+const superuserRouter = require("./routes/superuser");
 
 const app = express();
-app.use(cors())
+app.use(cors());
 app.use(bodyParser.json());
 mongoose.connect(process.env.DB_CONNECTION, (err) => {
   if (err) return console.log(err);
@@ -21,11 +21,18 @@ app.get("/", (req, res) => {
   console.log(req);
   res.status(404).send("invalid url");
 });
+app.get("/api", (req, res) => {
+  res.status(404).send("invalid url");
+});
 
-app.use("/companies", companiesRouter);
-app.use("/company", companyRouter)
-app.use('/superusers', superusersRouter)
-app.use('/superuser', superuserRouter)
+app.get("/api/v1", (req, res) => {
+  res.status(404).send("invalid url");
+});
+
+app.use("/api/v1/companies", companiesRouter);
+app.use("/api/v1/company", companyRouter);
+app.use("/api/v1/superusers", superusersRouter);
+app.use("/api/v1/superuser", superuserRouter);
 // listening
 
 app.listen(80);
