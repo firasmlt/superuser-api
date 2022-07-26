@@ -16,7 +16,6 @@ mongoose.connect(process.env.DB_CONNECTION, (err) => {
   else console.log("connected to db!");
 });
 
-// routes
 app.get("/", (req, res) => {
   res.sendFile(`${__dirname}/static/index.html`, (err) => {
     res.end();
@@ -35,6 +34,6 @@ app.use("/api/v1/companies", companiesRouter);
 app.use("/api/v1/company", companyRouter);
 app.use("/api/v1/superusers", superusersRouter);
 app.use("/api/v1/superuser", superuserRouter);
-// listening
 
-app.listen(80);
+app.listen(80); 
+
