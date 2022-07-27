@@ -9,6 +9,13 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
+  const firstName = req.body.firstName.trim();
+  const lastName = req.body.lastName.trim();
+  const email = req.body.email.trim();
+  const number = req.body.number.trim();
+  const company = req.body.company;
+  const answers = req.body.answers;
+
   const ValidateEmail = (email) => {
     var validRegex =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -21,24 +28,22 @@ router.post("/", (req, res) => {
     var re = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
     return re.test(number);
   };
-
   if (
-    !req.body.firstName ||
-    !req.body.lastName ||
-    !ValidateEmail(req.body.email) ||
-    !validatePhoneNumber(req.body.number)
+    !firstName ||
+    !lastName ||
+    !ValidateEmail(email) ||
+    !validatePhoneNumber(number)
   ) {
     res.status(400).json({ message: "invalid input" });
   } else {
     const superuser = new Superuser({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      number: req.body.number,
-      company: req.body.company,
-      answers: req.body.answers,
+      firstName,
+      lastName,
+      email,
+      number,
+      company,
+      answers,
     });
-
     superuser
       .save()
       .then((data) => res.json(data))

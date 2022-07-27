@@ -9,23 +9,23 @@ const SuperuserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  email:{
-    type:String,
-    required:true,
-    unique:true
+  email: {
+    type: String,
+    required: true,
+    unique: true,
   },
-  number:{
-    type:String,
-    required:true,
-    unique:true,
+  number: {
+    type: String,
+    required: true,
+    unique: true,
   },
-  company:{
-    type:String,
-    required:true
+  company: {
+    type: String,
+    required: true,
   },
-  answers:{
-    type:Array,
-  }
+  answers: {
+    type: Array,
+  },
 });
 
 module.exports = mongoose.model("Superuser", SuperuserSchema);
