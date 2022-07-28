@@ -1,16 +1,16 @@
 const Superuser = require("../models/Superuser");
 
-exports.getUser = async (req, res) => {
-  const data = await Superuser.findById(req.params.id);
+exports.getUser = async (req, res, next) => {
   try {
+    const data = await Superuser.findById("hedfsa");
     if (data) return res.status(200).json(data);
     res.status(404).json({ message: "not found" });
   } catch (err) {
-    res.status(404).json({ message: "not found" });
+    next(err);
   }
 };
 
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res, next) => {
   try {
     Superuser.findOneAndUpdate(
       { _id: req.params.id },
@@ -22,6 +22,6 @@ exports.updateUser = async (req, res) => {
       }
     );
   } catch (err) {
-    res.status(500).json({ message: err });
+    next(err);
   }
 };

@@ -1,15 +1,15 @@
 const Superuser = require("../models/Superuser");
 
-exports.getAllUsers = async (req, res) => {
-  const data = await Superuser.find();
+exports.getAllUsers = async (req, res, next) => {
   try {
+    const data = await Superuser.findd();
     res.status(200).json(data);
   } catch (err) {
-    res.json({ message: err });
+    next(err);
   }
 };
 
-exports.postUser = async (req, res) => {
+exports.postUser = async (req, res, next) => {
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const email = req.body.email;
@@ -45,11 +45,11 @@ exports.postUser = async (req, res) => {
       company,
       answers,
     });
-    const data = await superuser.save();
     try {
+      const data = await superuser.save();
       res.json(data);
     } catch (err) {
-      res.json({ message: err });
+      next(err);
     }
   }
 };
