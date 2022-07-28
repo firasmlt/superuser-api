@@ -1,4 +1,4 @@
-const Superuser = require("../models/Superuser");
+const Superuser = require("../models/superuserModel");
 const AppError = require("../utils/appError");
 
 exports.getAllUsers = async (req, res, next) => {
@@ -21,40 +21,56 @@ exports.postUser = async (req, res, next) => {
   const company = req.body.company;
   const answers = req.body.answers;
 
-  const ValidateEmail = (email) => {
-    var validRegex =
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  try {
+    const superuser = new Superuser({
+      firstName,
+      lastName,
+      email,
+      number,
+      company,
+      answers,
+    });
+    const data = await superuser.save();
+    if (!data) return next(new AppError("no data found!", 404));
+    res.json({
+      status: "success",
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
-    if (email.match(validRegex)) return true;
+exports.updateUser = async (req, res, next) => {
+  try {
+    Superuser.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      -{ new: true },
+      (err, doc) => {
+        if (!doc) return next(new AppError("user not updated!", 400));
+        res.status(200).json({
+          status: "success",
+          data: doc,
+        });
+      }
+    );
+  } catch (err) {
+    next(err);
+  }
+};
 
-    return false;
-  };
-  const validatePhoneNumber = (number) => {
-    var re = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
-    return re.test(number);
-  };
-  if (!firstName || !lastName || !email || !number) {
-    return next(new AppError("invalid input", 400));
-  } else {
-    if (!validatePhoneNumber(number) || !ValidateEmail(email))
-      return next(new AppError("invalid input", 400));
-    try {
-      const superuser = new Superuser({
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        email: email.trim(),
-        number: number.trim(),
-        company,
-        answers,
-      });
-      const data = await superuser.save();
-      if (!data) return next(new AppError("no data found!", 404));
-      res.json({
-        status: "success",
-        data,
-      });
-    } catch (err) {
-      next(err);
-    }
+exports.getUser = async (req, res, next) => {
+  try {
+    const data = await Superuser.findById(req.params.id);
+    if (!data) return next(new AppError("No User Found with that id", 404));
+    res.status(200).json({
+      status: "success",
+      data: {
+        superuser: data,
+      },
+    });
+  } catch (err) {
+    next(err);
   }
 };

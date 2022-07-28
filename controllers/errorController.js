@@ -12,6 +12,10 @@ const handleDuplicateFieldsDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleInvalidInputDB = (err) => {
+  return new AppError(err.message, 400);
+};
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -45,6 +49,7 @@ module.exports = (err, req, res, next) => {
   } else if (process.env.NODE_ENV === "production") {
     if (err.name === "CastError") err = handleCastErrorDB(err);
     if (err.code === 11000) err = handleDuplicateFieldsDB(err);
+    if (err.name === "ValidationError") err = handleInvalidInputDB(err);
     sendErrorProd(err, res);
   }
 };

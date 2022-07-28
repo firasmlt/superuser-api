@@ -4,6 +4,8 @@ const router = express.Router();
 
 router.get("/", companiesController.getAllCompanies);
 
-router.post("/", companiesController.addCompany);
+router.post("/signup", companiesController.signUp);
+
+router.get("/:id", companiesController.getCompany);
 
 module.exports = router;

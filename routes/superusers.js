@@ -7,4 +7,8 @@ router.get("/", superusersController.getAllUsers);
 
 router.post("/", superusersController.postUser);
 
+router.get("/:id", superusersController.getUser);
+
+router.patch("/:id", superusersController.updateUser);
+
 module.exports = router;

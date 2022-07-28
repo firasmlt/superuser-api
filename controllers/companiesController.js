@@ -1,4 +1,4 @@
-const Company = require("../models/Company");
+const Company = require("../models/companyModel");
 const AppError = require("../utils/appError");
 
 exports.getAllCompanies = async (req, res, next) => {
@@ -13,14 +13,11 @@ exports.getAllCompanies = async (req, res, next) => {
   }
 };
 
-exports.addCompany = async (req, res, next) => {
-  const company = new Company({
-    name: req.body.name,
-    questions: req.body.questions,
-  });
+exports.getCompany = async (req, res, next) => {
   try {
-    const data = await company.save();
-    res.json({
+    const data = await Company.findById(req.params.id);
+    if (!data) return next(new AppError("no company found with that id", 404));
+    res.status(200).json({
       status: "success",
       data,
     });
@@ -29,14 +26,16 @@ exports.addCompany = async (req, res, next) => {
   }
 };
 
-exports.addCompany = async (req, res, next) => {
+exports.signUp = async (req, res, next) => {
   try {
     const company = new Company({
       name: req.body.name,
+      email: req.body.email,
       questions: req.body.questions,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
     });
     const data = await company.save();
-    if (!data) return next(new AppError("data not saved", 400));
     res.json({
       status: "success",
       data,
