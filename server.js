@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 require("dotenv/config");
 const app = require("./app");
 
-mongoose.connect(process.env.DB_CONNECTION, (err) => {
-  if (err) return console.log(err);
-  else console.log("connected to db!");
-});
+mongoose
+  .connect(process.env.DB_CONNECTION)
+  .then(() => console.log("Database Connected."))
+  .catch((err) => console.log("err", err));
 
 const port = 80;
 
