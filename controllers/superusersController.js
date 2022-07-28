@@ -2,8 +2,11 @@ const Superuser = require("../models/Superuser");
 
 exports.getAllUsers = async (req, res, next) => {
   try {
-    const data = await Superuser.findd();
-    res.status(200).json(data);
+    const data = await Superuser.find();
+    res.status(200).json({
+      status: "success",
+      data,
+    });
   } catch (err) {
     next(err);
   }
@@ -47,7 +50,10 @@ exports.postUser = async (req, res, next) => {
     });
     try {
       const data = await superuser.save();
-      res.json(data);
+      res.json({
+        status: "success",
+        data,
+      });
     } catch (err) {
       next(err);
     }

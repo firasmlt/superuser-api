@@ -2,9 +2,13 @@ const Superuser = require("../models/Superuser");
 
 exports.getUser = async (req, res, next) => {
   try {
-    const data = await Superuser.findById("hedfsa");
-    if (data) return res.status(200).json(data);
-    res.status(404).json({ message: "not found" });
+    const data = await Superuser.findById(req.params.id);
+    res.status(200).json({
+      status: "success",
+      data: {
+        superuser: data,
+      },
+    });
   } catch (err) {
     next(err);
   }
@@ -17,8 +21,10 @@ exports.updateUser = async (req, res, next) => {
       req.body,
       -{ new: true },
       (err, doc) => {
-        if (!doc) res.status(404).json({ message: err });
-        res.status(200).json(doc);
+        res.status(200).json({
+          status: "success",
+          data: doc,
+        });
       }
     );
   } catch (err) {
