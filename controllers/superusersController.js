@@ -1,4 +1,5 @@
 const Superuser = require("../models/Superuser");
+const AppError = require("../utils/appError");
 
 exports.getAllUsers = async (req, res, next) => {
   try {
@@ -32,24 +33,22 @@ exports.postUser = async (req, res, next) => {
     var re = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
     return re.test(number);
   };
-  if (
-    !firstName.trim() ||
-    !lastName.trim() ||
-    !ValidateEmail(email.trim()) ||
-    !validatePhoneNumber(number.trim())
-  ) {
-    res.status(400).json({ message: "invalid input" });
+  if (!firstName || !lastName || !email || !number) {
+    return next(new AppError("invalid input", 400));
   } else {
-    const superuser = new Superuser({
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      email: email.trim(),
-      number: number.trim(),
-      company,
-      answers,
-    });
+    if (!validatePhoneNumber(number) || !ValidateEmail(email))
+      return next(new AppError("invalid input", 400));
     try {
+      const superuser = new Superuser({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
+        number: number.trim(),
+        company,
+        answers,
+      });
       const data = await superuser.save();
+      if (!data) return next(new AppError("no data found!", 404));
       res.json({
         status: "success",
         data,

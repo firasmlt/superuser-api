@@ -1,8 +1,10 @@
 const Superuser = require("../models/Superuser");
+const AppError = require("../utils/appError");
 
 exports.getUser = async (req, res, next) => {
   try {
     const data = await Superuser.findById(req.params.id);
+    if (!data) return next(new AppError("No User Found with that id", 404));
     res.status(200).json({
       status: "success",
       data: {
@@ -21,6 +23,7 @@ exports.updateUser = async (req, res, next) => {
       req.body,
       -{ new: true },
       (err, doc) => {
+        if (!doc) return next(new AppError("user not updated!", 400));
         res.status(200).json({
           status: "success",
           data: doc,
