@@ -1,5 +1,9 @@
 const express = require("express");
+
+const AppError = require("./utils/appError");
+const globalErrorHandler = require("./controllers/errorController");
 const mongoose = require("mongoose");
+
 const cors = require("cors");
 const bodyParser = require("body-parser");
 require("dotenv/config");
@@ -22,18 +26,15 @@ app.get("/", (req, res) => {
     if (err) throw err;
   });
 });
-app.get("/api", (req, res) => {
-  res.status(404).send("invalid url");
-});
-
-app.get("/api/v1", (req, res) => {
-  res.status(404).send("invalid url");
-});
 
 app.use("/api/v1/companies", companiesRouter);
 app.use("/api/v1/company", companyRouter);
 app.use("/api/v1/superusers", superusersRouter);
 app.use("/api/v1/superuser", superuserRouter);
 
-app.listen(80); 
+app.all("*", (req, res, next) => {
+  next(new AppError(`can't find ${req.originalUrl} on this server!`, 404));
+});
 
+app.use(globalErrorHandler);
+app.listen(80);
