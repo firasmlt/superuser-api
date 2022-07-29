@@ -22,6 +22,7 @@ const CompanySchema = mongoose.Schema({
     type: String,
     required: [true, "password field is required"],
     minlength: 8,
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -45,5 +46,12 @@ CompanySchema.pre("save", async function (next) {
   this.passwordConfirm = undefined;
   next();
 });
+
+CompanySchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 module.exports = mongoose.model("Company", CompanySchema);

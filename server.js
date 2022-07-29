@@ -4,7 +4,9 @@ require("dotenv/config");
 const app = require("./app");
 
 mongoose
-  .connect(process.env.DB_CONNECTION)
+  .connect(process.env.DB_CONNECTION, {
+    autoIndex: true,
+  })
   .then(() => console.log("Database Connected."))
   .catch((err) => console.log("err", err));
 

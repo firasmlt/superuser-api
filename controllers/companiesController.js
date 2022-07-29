@@ -25,16 +25,3 @@ exports.getCompany = async (req, res, next) => {
     next(err);
   }
 };
-
-exports.signUp = async (req, res, next) => {
-  try {
-    const newCompany = await Company.create(req.body);
-
-    res.json({
-      status: "success",
-      data: newCompany,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
