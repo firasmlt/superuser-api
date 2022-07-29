@@ -28,17 +28,11 @@ exports.getCompany = async (req, res, next) => {
 
 exports.signUp = async (req, res, next) => {
   try {
-    const company = new Company({
-      name: req.body.name,
-      email: req.body.email,
-      questions: req.body.questions,
-      password: req.body.password,
-      passwordConfirm: req.body.passwordConfirm,
-    });
-    const data = await company.save();
+    const newCompany = await Company.create(req.body);
+
     res.json({
       status: "success",
-      data,
+      data: newCompany,
     });
   } catch (err) {
     next(err);

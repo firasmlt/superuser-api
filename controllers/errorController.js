@@ -50,6 +50,8 @@ module.exports = (err, req, res, next) => {
     if (err.name === "CastError") err = handleCastErrorDB(err);
     if (err.code === 11000) err = handleDuplicateFieldsDB(err);
     if (err.name === "ValidationError") err = handleInvalidInputDB(err);
+    if (err.type === "entity.parse.failed")
+      err = new AppError("invalid request body", 400);
     sendErrorProd(err, res);
   }
 };
