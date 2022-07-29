@@ -6,7 +6,7 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  const message = `Duplicate field value: ${Object.getOwnPropertyNames(
+  const message = `duplicate field value: ${Object.getOwnPropertyNames(
     err.keyValue
   )}`;
   return new AppError(message, 400);
@@ -52,6 +52,8 @@ module.exports = (err, req, res, next) => {
     if (err.name === "ValidationError") err = handleInvalidInputDB(err);
     if (err.type === "entity.parse.failed")
       err = new AppError("invalid request body", 400);
+    if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError")
+      err = new AppError("invalid token", 400);
     sendErrorProd(err, res);
   }
 };

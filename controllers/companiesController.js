@@ -25,3 +25,16 @@ exports.getCompany = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.deleteCompany = async (req, res, next) => {
+  try {
+    const data = await Company.findByIdAndDelete(req.params.id);
+    if (!data) return next(new AppError("no company found with that id", 404));
+    res.status(200).json({
+      status: "success",
+      message: "company deleted successfully",
+    });
+  } catch (err) {
+    next(err);
+  }
+};

@@ -34,6 +34,7 @@ const CompanySchema = mongoose.Schema({
       message: "passwordConfirm error",
     },
   },
+  passwordChangedAt: Date,
 });
 
 CompanySchema.pre("save", async function (next) {
@@ -52,6 +53,17 @@ CompanySchema.methods.correctPassword = async function (
   userPassword
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+CompanySchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    return changedTimestamp > JWTTimestamp;
+  }
+  return false;
 };
 
 module.exports = mongoose.model("Company", CompanySchema);

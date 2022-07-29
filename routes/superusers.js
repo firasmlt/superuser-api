@@ -1,6 +1,7 @@
 const express = require("express");
 
 const superusersController = require("../controllers/superusersController");
+// const authController = require("../controllers/authController");
 const router = express.Router();
 
 router.get("/", superusersController.getAllUsers);

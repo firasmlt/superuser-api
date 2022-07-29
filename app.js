@@ -9,6 +9,10 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+// app.use((req, res, next) => {
+//   console.log(req.headers);
+//   next();
+// });
 
 app.get("/", (req, res) => {
   res.sendFile(`${__dirname}/static/index.html`, (err) => {
