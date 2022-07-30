@@ -4,9 +4,11 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-router.post("/signup", authController.signUp);
-router.post("/signin", authController.signIn);
-router.get("/", authController.protect, companiesController.getAllCompanies);
-router.get("/:id", companiesController.getCompany);
-router.delete("/:id", companiesController.deleteCompany);
+router
+  .post("/signup", authController.signUp)
+  .post("/login", authController.logIn)
+  .get("/", authController.protect, companiesController.getAllCompanies)
+  .get("/:id", companiesController.getCompany)
+  .delete("/:id", authController.protect, companiesController.deleteCompany);
+
 module.exports = router;

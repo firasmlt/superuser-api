@@ -2,7 +2,6 @@ const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const Company = require("../models/companyModel");
 const AppError = require("../utils/appError");
-// const { use } = require("../routes/companies");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -29,7 +28,7 @@ exports.signUp = async (req, res, next) => {
   }
 };
 
-exports.signIn = async (req, res, next) => {
+exports.logIn = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -57,6 +56,7 @@ exports.signIn = async (req, res, next) => {
 exports.protect = async (req, res, next) => {
   try {
     // get token and check if it exists
+
     let token;
     if (
       req.headers.authorization &&
@@ -70,13 +70,15 @@ exports.protect = async (req, res, next) => {
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
     // checking if the user still exists
-    const freshCompany = await Company.findById(decoded.id);
-    if (!freshCompany) return next(new AppError("invalid token", 401));
+    const currentCompany = await Company.findById(decoded.id);
+    if (!currentCompany) return next(new AppError("invalid token", 401));
 
     // checking if password is changed
-    if (freshCompany.changedPasswordAfter(decoded.iat))
+    if (currentCompany.changedPasswordAfter(decoded.iat))
       return next(new AppError("invalid token", 401));
 
+    // grant access
+    req.company = currentCompany;
     next();
   } catch (err) {
     next(err);
