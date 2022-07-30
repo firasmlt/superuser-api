@@ -51,17 +51,13 @@ exports.updateUser = async (req, res, next) => {
     if (!user) return next(new AppError("user not updated", 400));
     if (!checkCompany(user.company, req.company.name, next))
       return next(new AppError("not authorized", 401));
-    Superuser.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
-      -{ new: true },
-      (err, doc) => {
-        res.send({
-          status: "success",
-          data: doc,
-        });
-      }
-    );
+
+    user.answers = req.body.answers;
+    user.save();
+    res.send({
+      status: "success",
+      data: user,
+    });
   } catch (err) {
     next(err);
   }
