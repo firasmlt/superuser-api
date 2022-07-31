@@ -36,6 +36,9 @@ app.use(mongoSanitize());
 // data sanitization against XSS
 app.use(xss());
 
+// prevent parameter pollution
+app.use(hpp());
+
 app.get("/", (req, res) => {
   res.sendFile(`${__dirname}/static/index.html`, (err) => {
     res.end();
