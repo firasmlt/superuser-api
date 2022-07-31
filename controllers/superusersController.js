@@ -1,5 +1,6 @@
 const Superuser = require("../models/superuserModel");
 const AppError = require("../utils/appError");
+
 const checkCompany = (currentCompany, reqComp, next) => {
   if (currentCompany !== reqComp) return false;
   return true;
@@ -35,7 +36,7 @@ exports.postUser = async (req, res, next) => {
       answers,
     });
     const data = await superuser.save();
-    if (!data) return next(new AppError("no data found!", 404));
+    if (!data) return next(new AppError("error: not saved", 400));
     res.json({
       status: "success",
       data,
