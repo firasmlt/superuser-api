@@ -9,9 +9,13 @@ router
   .post("/login", authController.logIn)
   .post("/forgotPassword", authController.forgotPassword)
   .patch("/resetPassword/:token", authController.resetPassword)
-  .get("/", authController.protect, companiesController.getAllCompanies)
+  .get("/", companiesController.getAllCompanies)
   .get("/:id", companiesController.getCompany)
-  .patch("/update", authController.protect, companiesController.updateCompany)
-  .delete("/:id", authController.protect, companiesController.deleteCompany);
+  .patch("/updateMe", authController.protect, companiesController.updateCompany)
+  .delete(
+    "/deleteMe",
+    authController.protect,
+    companiesController.deleteCompany
+  );
 
 module.exports = router;

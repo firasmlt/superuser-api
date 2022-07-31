@@ -60,13 +60,11 @@ exports.updateCompany = async (req, res, next) => {
 
 exports.deleteCompany = async (req, res, next) => {
   try {
-    if (String(req.company._id) !== req.params.id)
-      return next(new AppError("not authorized", 401));
-    const data = await Company.findByIdAndDelete(req.params.id);
-    if (!data) return next(new AppError("no company found with that id", 404));
-    res.status(200).json({
+    await Company.findByIdAndUpdate(req.company.id, { active: false });
+
+    res.status(204).json({
       status: "success",
-      message: "company deleted successfully",
+      data: null,
     });
   } catch (err) {
     next(err);

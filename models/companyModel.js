@@ -37,6 +37,11 @@ const CompanySchema = mongoose.Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 CompanySchema.pre("save", async function (next) {
@@ -53,6 +58,11 @@ CompanySchema.pre("save", async function (next) {
 CompanySchema.pre("save", async function (next) {
   if (!this.isModified("password") || this.isNew) return next();
   this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+CompanySchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
   next();
 });
 
