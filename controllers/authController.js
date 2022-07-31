@@ -16,14 +16,20 @@ exports.signUp = async (req, res, next) => {
   try {
     const newCompany = await Company.create(req.body);
     const token = signToken(newCompany._id);
+    res.cookie("jwt", token, {
+      expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      // secure: true, ACTIVATE IN PROD
+      httpOnly: true,
+    });
+
+    newCompany.password = undefined;
+    newCompany.active = undefined;
 
     res.json({
       status: "success",
       token,
       data: {
         ...newCompany._doc,
-        password: undefined,
-        __v: undefined,
       },
     });
   } catch (err) {
@@ -45,11 +51,15 @@ exports.logIn = async (req, res, next) => {
       return next(new AppError("invalid credentials", 401));
 
     const token = signToken(company._id);
-
+    res.cookie("jwt", token, {
+      expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      // secure: true, ACTIVATE IN PROD
+      httpOnly: true,
+    });
     res.json({
       status: "success",
       token,
-      data: { ...company._doc, password: undefined, __v: undefined },
+      data: { ...company._doc },
     });
   } catch (err) {
     next(err);
@@ -146,7 +156,11 @@ exports.resetPassword = async (req, res, next) => {
     await user.save();
 
     const token = signToken(user._id);
-
+    res.cookie("jwt", token, {
+      expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      // secure: true, ACTIVATE IN PROD
+      httpOnly: true,
+    });
     res.status(200).json({
       status: "success",
       token,
@@ -155,4 +169,3 @@ exports.resetPassword = async (req, res, next) => {
     next(err);
   }
 };
-
