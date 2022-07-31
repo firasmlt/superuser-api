@@ -1,6 +1,6 @@
 const express = require("express");
 const rateLimit = require("express-rate-limit");
-
+const helmet = require("helmet");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const bodyParser = require("body-parser");
@@ -11,6 +11,11 @@ const cors = require("cors");
 const app = express();
 
 // global middlewares
+
+// security headers
+app.use(helmet());
+
+// rate limiting
 const limiter = rateLimit({
   max: 10,
   windowMs: 60 * 60 * 1000,
@@ -18,6 +23,7 @@ const limiter = rateLimit({
 });
 
 app.use("/api", limiter);
+
 app.use(cors());
 app.use(bodyParser.json());
 
