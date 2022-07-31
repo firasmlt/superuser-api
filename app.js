@@ -4,12 +4,13 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
-const bodyParser = require("body-parser");
 const companiesRouter = require("./routes/companies");
 const superusersRouter = require("./routes/superusers");
-const cors = require("cors");
 
 const app = express();
 

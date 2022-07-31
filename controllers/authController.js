@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const Company = require("../models/companyModel");
 const AppError = require("../utils/appError");
 const sendEmail = require("../utils/email");
-const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 
 const signToken = (id) => {

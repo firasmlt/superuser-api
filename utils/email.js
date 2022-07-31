@@ -1,26 +1,37 @@
 const nodemailer = require("nodemailer");
 
-const sendEmail = async (options) => {
+const sendEmail = async (options, next) => {
   // create transporter
-  const transporter = nodemailer.createTransport({
-    host: "smtp.mailtrap.io",
-    port: 2525,
-    auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-  // define email options
-  const mailOptions = {
-    from: "Superusers Corp <support@superusers.com>",
-    to: options.email,
-    subject: options.subject,
-    text: options.message,
-  };
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp-mail.outlook.com",
+      secureConnection: false,
+      port: 587,
 
-  // send email
-  console.log("haya");
-  await transporter.sendMail(mailOptions);
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+      tls: {
+        ciphers: "SSLv3",
+      },
+    });
+    // define email options
+    const mailOptions = {
+      from: "Superusers Corp <superuserstesting@outlook.com>",
+      to: options.email,
+      subject: options.subject,
+      text: options.message,
+    };
+
+    // send email
+    await transporter.sendMail(mailOptions, function (err) {
+      return next(err);
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
 };
 
 module.exports = sendEmail;
