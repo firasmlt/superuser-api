@@ -25,7 +25,7 @@ exports.signUp = async (req, res, next) => {
     newCompany.password = undefined;
     newCompany.active = undefined;
 
-    res.json({
+    res.status(200).json({
       status: "success",
       token,
       data: {
@@ -56,7 +56,9 @@ exports.logIn = async (req, res, next) => {
       // secure: true, ACTIVATE IN PROD
       httpOnly: true,
     });
-    res.json({
+    company._doc.password = undefined;
+    company._doc.active = undefined;
+    res.status(200).json({
       status: "success",
       token,
       data: { ...company._doc },

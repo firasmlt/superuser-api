@@ -1,6 +1,9 @@
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
+
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const bodyParser = require("body-parser");
@@ -11,21 +14,27 @@ const cors = require("cors");
 const app = express();
 
 // global middlewares
+app.use(cors());
 
 // security headers
 app.use(helmet());
 
 // rate limiting
 const limiter = rateLimit({
-  max: 10,
+  max: 100,
   windowMs: 60 * 60 * 1000,
   message: "too many requests, please try again in one hour!",
 });
 
 app.use("/api", limiter);
 
-app.use(cors());
 app.use(bodyParser.json());
+
+// data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// data sanitization against XSS
+app.use(xss());
 
 app.get("/", (req, res) => {
   res.sendFile(`${__dirname}/static/index.html`, (err) => {
