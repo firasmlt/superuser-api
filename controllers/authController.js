@@ -69,8 +69,6 @@ exports.logIn = async (req, res, next) => {
 
 exports.protect = async (req, res, next) => {
   try {
-    // get token and check if it exists
-
     let token;
     if (
       req.headers.authorization &&
@@ -80,18 +78,14 @@ exports.protect = async (req, res, next) => {
     }
     if (!token) return next(new AppError("Authentication Error", 401));
 
-    // validating the token
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-    // checking if the user still exists
     const currentCompany = await Company.findById(decoded.id);
     if (!currentCompany) return next(new AppError("invalid token", 401));
 
-    // checking if password is changed
     if (currentCompany.changedPasswordAfter(decoded.iat))
       return next(new AppError("invalid token", 401));
 
-    // grant access
     req.company = currentCompany;
     next();
   } catch (err) {
@@ -101,17 +95,15 @@ exports.protect = async (req, res, next) => {
 
 exports.forgotPassword = async (req, res, next) => {
   try {
-    // get user based on posted email
     const user = await Company.findOne({ email: req.body.email });
     if (!user)
       return next(
         new AppError("no user with the specified email address", 404)
       );
-    // generate the random token
+
     const resetToken = user.createPasswordResetToken();
     await user.save({ validateBeforeSave: false });
 
-    // send it to the user's email
     const tokenURL = `${req.protocol}://${req.get(
       "host"
     )}/api/v1/companies/resetPassword/${resetToken}`;

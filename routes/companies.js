@@ -11,11 +11,7 @@ router
   .patch("/resetPassword/:token", authController.resetPassword)
   .get("/", companiesController.getAllCompanies)
   .get("/:id", companiesController.getCompany)
-  .patch("/updateMe", authController.protect, companiesController.updateCompany)
-  .delete(
-    "/deleteMe",
-    authController.protect,
-    companiesController.deleteCompany
-  );
+  .patch("/update", authController.protect, companiesController.updateCompany)
+  .delete("/delete", authController.protect, companiesController.deleteCompany);
 
 module.exports = router;

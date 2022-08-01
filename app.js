@@ -15,29 +15,18 @@ const superusersRouter = require("./routes/superusers");
 const app = express();
 
 // global middlewares
+
 app.use(cors());
-
-// security headers
 app.use(helmet());
-
-// rate limiting
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
   message: "too many requests, please try again in one hour!",
 });
-
 app.use("/api", limiter);
-
 app.use(bodyParser.json());
-
-// data sanitization against NoSQL query injection
 app.use(mongoSanitize());
-
-// data sanitization against XSS
 app.use(xss());
-
-// prevent parameter pollution
 app.use(hpp());
 
 app.get("/", (req, res) => {

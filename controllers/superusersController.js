@@ -68,8 +68,7 @@ exports.getUser = async (req, res, next) => {
   try {
     const data = await Superuser.findById(req.params.id);
     if (!data) return next(new AppError("No User Found with that id", 404));
-    if (!checkCompany(data.company, req.company.name, next))
-      return next(new AppError("not authorized", 401));
+
     res.status(200).json({
       status: "success",
       data: {

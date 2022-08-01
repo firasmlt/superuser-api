@@ -1,7 +1,6 @@
 const nodemailer = require("nodemailer");
 
 const sendEmail = async (options, next) => {
-  // create transporter
   try {
     const transporter = nodemailer.createTransport({
       host: "smtp-mail.outlook.com",
@@ -16,7 +15,7 @@ const sendEmail = async (options, next) => {
         ciphers: "SSLv3",
       },
     });
-    // define email options
+
     const mailOptions = {
       from: "Superusers Corp <superuserstesting@outlook.com>",
       to: options.email,
@@ -24,12 +23,10 @@ const sendEmail = async (options, next) => {
       text: options.message,
     };
 
-    // send email
     await transporter.sendMail(mailOptions, function (err) {
       return next(err);
     });
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };
