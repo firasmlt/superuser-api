@@ -34,7 +34,6 @@ const SuperuserSchema = mongoose.Schema({
   },
   answers: {
     lowercase: true,
-
     type: Array,
   },
 });

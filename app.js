@@ -19,7 +19,7 @@ const app = express();
 app.use(cors());
 app.use(helmet());
 const limiter = rateLimit({
-  max: 100,
+  max: 10000,
   windowMs: 60 * 60 * 1000,
   message: "too many requests, please try again in one hour!",
 });

@@ -8,7 +8,7 @@ const checkCompany = (currentCompany, reqComp, next) => {
 
 exports.getAllUsers = async (req, res, next) => {
   try {
-    const data = await Superuser.find({ company: req.company.name });
+    const data = await Superuser.find();
     res.status(200).json({
       status: "success",
       data,
@@ -46,14 +46,44 @@ exports.postUser = async (req, res, next) => {
   }
 };
 
+exports.addAnswer = async (req, res, next) => {
+  try {
+    const user = await Superuser.findOne({ _id: req.params.id });
+    if (!user) return next(new AppError("no user found", 404));
+
+    let newAnswers = [];
+    if (user.answers) newAnswers = user.answers;
+    newAnswers.push(req.body.answer);
+    console.log(newAnswers);
+    user.answers = newAnswers;
+    user.save();
+    res.send({
+      status: "success",
+      data: user,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.updateUser = async (req, res, next) => {
   try {
     const user = await Superuser.findOne({ _id: req.params.id });
-    if (!user) return next(new AppError("user not updated", 400));
+    if (!user) return next(new AppError("no user found", 404));
     if (!checkCompany(user.company, req.company.name, next))
       return next(new AppError("not authorized", 401));
-
-    user.answers = req.body.answers;
+    if (req.body.firstName) {
+      user.firstName = req.body.firstName;
+    }
+    if (req.body.lastName) {
+      user.lastName = req.body.lastName;
+    }
+    if (req.body.email) {
+      user.email = req.body.email;
+    }
+    if (req.body.number) {
+      user.number = req.body.number;
+    }
     user.save();
     res.send({
       status: "success",
