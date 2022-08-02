@@ -59,7 +59,6 @@ exports.addAnswer = async (req, res, next) => {
     let newAnswers = [];
     if (user.answers) newAnswers = user.answers;
     newAnswers.push(req.body.answer);
-    console.log(newAnswers);
     user.answers = newAnswers;
     user.save();
     res.send({

@@ -8,7 +8,7 @@ router
   .get("/", superusersController.getAllUsers)
   .post("/", superusersController.postUser)
   .get("/:id", superusersController.getUser)
-  .patch("/addAnswer/:id", superusersController.addAnswer)
+  .post("/addAnswer/:id", superusersController.addAnswer)
   .patch("/:id", authController.protect, superusersController.updateUser)
   .delete("/:id", authController.protect, superusersController.deleteUser);
 
