@@ -1,5 +1,6 @@
 const Superuser = require("../models/superuserModel");
 const AppError = require("../utils/appError");
+const sendEmail = require("../utils/email");
 
 const checkCompany = (currentCompany, reqComp, next) => {
   if (currentCompany !== reqComp) return false;
@@ -36,7 +37,11 @@ exports.postUser = async (req, res, next) => {
       answers,
     });
     const data = await superuser.save();
-    if (!data) return next(new AppError("error: not saved", 400));
+    await sendEmail({
+      email: data.email,
+      subject: "Welcome to superusers",
+      message: `Welcome ${firstName},\n this is a test email `,
+    });
     res.json({
       status: "success",
       data,
