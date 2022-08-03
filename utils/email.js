@@ -17,11 +17,12 @@ const sendEmail = async (options, next) => {
     });
 
     const mailOptions = {
-      from: "Superusers Corp <superuserstesting@outlook.com>",
+      from: "Superusers Testing <superuserstesting@outlook.com>",
       to: options.email,
       subject: options.subject,
       text: options.message,
     };
+
     await transporter.sendMail(mailOptions, function (err) {
       console.log(err);
     });
