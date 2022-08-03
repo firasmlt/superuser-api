@@ -24,10 +24,16 @@ const SuperuserSchema = mongoose.Schema({
     required: [true, "number field is required"],
     unique: true,
   },
+
   company: {
     lowercase: true,
     type: String,
     required: [true, "company field is required"],
+  },
+  userType: {
+    type: String,
+    enum: ["superuser", "normaluser"],
+    required: [true, "type field is required"],
   },
   answers: {
     lowercase: true,

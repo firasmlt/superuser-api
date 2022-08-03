@@ -93,71 +93,71 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-exports.forgotPassword = async (req, res, next) => {
-  try {
-    const user = await Company.findOne({ email: req.body.email });
-    if (!user)
-      return next(
-        new AppError("no user with the specified email address", 404)
-      );
+// exports.forgotPassword = async (req, res, next) => {
+//   try {
+//     const user = await Company.findOne({ email: req.body.email });
+//     if (!user)
+//       return next(
+//         new AppError("no user with the specified email address", 404)
+//       );
 
-    const resetToken = user.createPasswordResetToken();
-    await user.save({ validateBeforeSave: false });
+//     const resetToken = user.createPasswordResetToken();
+//     await user.save({ validateBeforeSave: false });
 
-    const tokenURL = `${req.protocol}://${req.get(
-      "host"
-    )}/api/v1/companies/resetPassword/${resetToken}`;
+//     const tokenURL = `${req.protocol}://${req.get(
+//       "host"
+//     )}/api/v1/companies/resetPassword/${resetToken}`;
 
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: "testing",
-        message: `reset link : \n ${tokenURL}`,
-      });
-    } catch (err) {
-      user.passwordResetToken = undefined;
-      user.passwordResetExpires = undefined;
-    }
-    res.status(200).json({
-      status: "success",
-      message: "reset email sent",
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+//     try {
+//       await sendEmail({
+//         email: user.email,
+//         subject: "testing",
+//         message: `reset link : \n ${tokenURL}`,
+//       });
+//     } catch (err) {
+//       user.passwordResetToken = undefined;
+//       user.passwordResetExpires = undefined;
+//     }
+//     res.status(200).json({
+//       status: "success",
+//       message: "reset email sent",
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
-exports.resetPassword = async (req, res, next) => {
-  try {
-    const hashedToken = crypto
-      .createHash("sha256")
-      .update(req.params.token)
-      .digest("hex");
+// exports.resetPassword = async (req, res, next) => {
+//   try {
+//     const hashedToken = crypto
+//       .createHash("sha256")
+//       .update(req.params.token)
+//       .digest("hex");
 
-    const user = await Company.findOne({
-      passwordResetToken: hashedToken,
-      passwordResetExpires: { $gt: Date.now() },
-    });
+//     const user = await Company.findOne({
+//       passwordResetToken: hashedToken,
+//       passwordResetExpires: { $gt: Date.now() },
+//     });
 
-    if (!user) return next(new AppError("invalid token", 400));
-    user.password = req.body.password;
-    user.passwordConfirm = req.body.passwordConfirm;
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
+//     if (!user) return next(new AppError("invalid token", 400));
+//     user.password = req.body.password;
+//     user.passwordConfirm = req.body.passwordConfirm;
+//     user.passwordResetToken = undefined;
+//     user.passwordResetExpires = undefined;
 
-    await user.save();
+//     await user.save();
 
-    const token = signToken(user._id);
-    res.cookie("jwt", token, {
-      expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-      // secure: true, ACTIVATE IN PROD
-      httpOnly: true,
-    });
-    res.status(200).json({
-      status: "success",
-      token,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+//     const token = signToken(user._id);
+//     res.cookie("jwt", token, {
+//       expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+//       // secure: true, ACTIVATE IN PROD
+//       httpOnly: true,
+//     });
+//     res.status(200).json({
+//       status: "success",
+//       token,
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };

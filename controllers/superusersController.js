@@ -34,7 +34,7 @@ exports.postUser = async (req, res, next) => {
   const number = req.body.number;
   const company = req.body.company;
   const answers = req.body.answers;
-
+  const userType = req.body.userType;
   try {
     const superuser = new Superuser({
       firstName,
@@ -42,14 +42,15 @@ exports.postUser = async (req, res, next) => {
       email,
       number,
       company,
+      userType,
       answers,
     });
     const data = await superuser.save();
-    await sendEmail({
-      email: data.email,
-      subject: "Welcome to superusers",
-      message: `Welcome ${firstName},\n this is a test email `,
-    });
+    // await sendEmail({
+    //   email: data.email,
+    //   subject: "Welcome to superusers",
+    //   message: `Welcome ${firstName},\n this is a test email `,
+    // });
     res.json({
       status: "success",
       data,
@@ -65,7 +66,7 @@ exports.addAnswer = async (req, res, next) => {
     if (!user) return next(new AppError("no user found", 404));
 
     let newAnswers = [req.body.answer];
-    if (user.answers) newAnswers = [newAnswers, ...user.answers];
+    if (user.answers) newAnswers = [...newAnswers, ...user.answers];
     user.answers = newAnswers;
     user.save();
     res.send({
