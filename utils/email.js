@@ -15,7 +15,6 @@ const sendEmail = async (options, next) => {
         ciphers: "SSLv3",
       },
     });
-
     const mailOptions = {
       from: "Superusers Testing <superuserstesting@outlook.com>",
       to: options.email,
@@ -23,7 +22,7 @@ const sendEmail = async (options, next) => {
       text: options.message,
     };
 
-    await transporter.sendMail(mailOptions, function (err) {
+    transporter.sendMail(mailOptions, function (err) {
       console.log(err);
     });
   } catch (err) {

@@ -5,13 +5,11 @@ const SuperuserSchema = mongoose.Schema({
   firstName: {
     type: String,
     lowercase: true,
-
     required: [true, "firstName field is required"],
   },
   lastName: {
     type: String,
     lowercase: true,
-
     required: [true, "lastName field is required"],
   },
   email: {
@@ -28,7 +26,6 @@ const SuperuserSchema = mongoose.Schema({
   },
   company: {
     lowercase: true,
-
     type: String,
     required: [true, "company field is required"],
   },

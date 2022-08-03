@@ -29,13 +29,6 @@ app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp());
 
-app.get("/", (req, res) => {
-  res.sendFile(`${__dirname}/static/index.html`, (err) => {
-    res.end();
-    if (err) throw err;
-  });
-});
-
 app.use("/api/v1/companies", companiesRouter);
 app.use("/api/v1/superusers", superusersRouter);
 

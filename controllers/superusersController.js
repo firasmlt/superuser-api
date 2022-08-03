@@ -2,6 +2,14 @@ const Superuser = require("../models/superuserModel");
 const AppError = require("../utils/appError");
 const sendEmail = require("../utils/email");
 
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+  return newObj;
+};
+
 const checkCompany = (currentCompany, reqComp, next) => {
   if (currentCompany !== reqComp) return false;
   return true;
@@ -56,9 +64,8 @@ exports.addAnswer = async (req, res, next) => {
     const user = await Superuser.findOne({ _id: req.params.id });
     if (!user) return next(new AppError("no user found", 404));
 
-    let newAnswers = [];
-    if (user.answers) newAnswers = user.answers;
-    newAnswers.push(req.body.answer);
+    let newAnswers = [req.body.answer];
+    if (user.answers) newAnswers = [newAnswers, ...user.answers];
     user.answers = newAnswers;
     user.save();
     res.send({
@@ -73,25 +80,29 @@ exports.addAnswer = async (req, res, next) => {
 exports.updateUser = async (req, res, next) => {
   try {
     const user = await Superuser.findOne({ _id: req.params.id });
-    if (!user) return next(new AppError("no user found", 404));
     if (!checkCompany(user.company, req.company.name, next))
       return next(new AppError("not authorized", 401));
-    if (req.body.firstName) {
-      user.firstName = req.body.firstName;
-    }
-    if (req.body.lastName) {
-      user.lastName = req.body.lastName;
-    }
-    if (req.body.email) {
-      user.email = req.body.email;
-    }
-    if (req.body.number) {
-      user.number = req.body.number;
-    }
-    user.save();
-    res.send({
+    if (!user)
+      return next(new AppError("no user found with the specified id", 404));
+    const filteredBody = filterObj(
+      req.body,
+      "firstName",
+      "lastName",
+      "email",
+      "number"
+    );
+    const updateUser = await Superuser.findByIdAndUpdate(
+      user._id,
+      filteredBody,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.status(200).json({
       status: "success",
-      data: user,
+      data: updateUser,
     });
   } catch (err) {
     next(err);
