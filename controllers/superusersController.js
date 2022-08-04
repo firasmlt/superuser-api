@@ -1,6 +1,6 @@
 const Superuser = require("../models/superuserModel");
 const AppError = require("../utils/appError");
-const sendEmail = require("../utils/email");
+// const sendEmail = require("../utils/email");
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -62,11 +62,12 @@ exports.postUser = async (req, res, next) => {
 
 exports.addAnswer = async (req, res, next) => {
   try {
+    if (!req.body.answer || req.body.answer.length < 10)
+      return next(new AppError("invalid answer"));
     const user = await Superuser.findOne({ _id: req.params.id });
     if (!user) return next(new AppError("no user found", 404));
-
     let newAnswers = [req.body.answer];
-    if (user.answers) newAnswers = [...newAnswers, ...user.answers];
+    if (user.answers) newAnswers = [...user.answers, ...newAnswers];
     user.answers = newAnswers;
     user.save();
     res.send({
